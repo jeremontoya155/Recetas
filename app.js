@@ -1,4 +1,5 @@
 // app.js
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const pool = require('./db');
@@ -8,7 +9,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
 }));
@@ -21,6 +22,11 @@ function isAuthenticated(req, res, next) {
     res.redirect('/login');
   }
 }
+
+// Ruta de inicio
+app.get('/', (req, res) => {
+  res.render('login');
+});
 
 // Rutas
 app.get('/login', (req, res) => {
@@ -47,12 +53,12 @@ app.get('/recetas', isAuthenticated, (req, res) => {
 app.post('/recetas', isAuthenticated, async (req, res) => {
   const { startDate, endDate, sucursal } = req.body;
   const result = await pool.query(`
-    SELECT * FROM recetas 
+    SELECT numero FROM recetas 
     WHERE fechacreacion BETWEEN $1 AND $2 AND sucursales = $3
   `, [startDate, endDate, sucursal]);
 
-  const recetas = result.rows;
-  const txtContent = recetas.map(r => JSON.stringify(r)).join('\n');
+  const numeros = result.rows.map(r => r.numero);
+  const txtContent = numeros.join('\n');
 
   res.setHeader('Content-disposition', 'attachment; filename=Codigos.txt');
   res.setHeader('Content-type', 'text/plain');
@@ -61,6 +67,7 @@ app.post('/recetas', isAuthenticated, async (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
