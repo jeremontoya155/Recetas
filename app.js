@@ -1,17 +1,22 @@
-// app.js
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const pool = require('./db');
+const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
+  store: new pgSession({
+    pool: pool,                // Conexión de la base de datos
+    tableName: 'session'       // Nombre de la tabla de sesiones
+  }),
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 días
 }));
 
 // Middleware para verificar si el usuario está autenticado
@@ -25,7 +30,7 @@ function isAuthenticated(req, res, next) {
 
 // Ruta de inicio
 app.get('/', (req, res) => {
-  res.render('login');
+  res.redirect('/login');
 });
 
 // Rutas
@@ -64,6 +69,16 @@ app.post('/recetas', isAuthenticated, async (req, res) => {
   res.setHeader('Content-type', 'text/plain');
   res.write(txtContent, () => {
     res.end();
+  });
+});
+
+// Ruta para cerrar sesión
+app.get('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      return res.send('Error al cerrar la sesión');
+    }
+    res.redirect('/login');
   });
 });
 

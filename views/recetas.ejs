@@ -42,9 +42,16 @@
       border-radius: 5px;
       color: #ffffff;
       font-size: 16px;
+      margin-bottom: 10px;
     }
     .recetas-container button:hover {
       background-color: #0056b3;
+    }
+    .recetas-container .logout {
+      background-color: #dc3545;
+    }
+    .recetas-container .logout:hover {
+      background-color: #c82333;
     }
   </style>
 </head>
@@ -59,6 +66,9 @@
       <label for="sucursal">Sucursal:</label>
       <input type="text" id="sucursal" name="sucursal" required>
       <button type="submit">Download Codigos</button>
+    </form>
+    <form action="/logout" method="get">
+      <button type="submit" class="logout">Logout</button>
     </form>
   </div>
 </body>
