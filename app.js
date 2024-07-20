@@ -8,6 +8,13 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
+
+// Middleware para servir archivos estáticos
+app.use(express.static('public'));
+
+app.get('/', (req, res) => {
+  res.render('login');
+});
 app.use(session({
   store: new pgSession({
     pool: pool,                // Conexión de la base de datos

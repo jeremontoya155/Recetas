@@ -14,62 +14,177 @@
     }
     .recetas-container {
       background-color: #ffffff;
-      padding: 20px;
+      padding-right: 20px;
+      padding-left:20px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 400px;
+      width: 700px;
+      height: 555px;
+      display:flex;
+      align-items:center;
+      justify-content: flex-start;
+      flex-flow: column wrap;
+      position:relative; 
     }
-    .recetas-container h2 {
-      margin: 0 0 20px 0;
-      text-align: center;
+    .formulario{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-flow:column nowrap;
     }
-    .recetas-container label {
-      display: block;
-      margin-bottom: 5px;
+    .formulario .form{
+      width:100%;
+      height: 100%;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      flex-flow: row wrap;
     }
-    .recetas-container input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    .mitad{
+      width:50%;
+      height: 350px;
     }
-    .recetas-container button {
-      width: 100%;
-      padding: 10px;
-      background-color: #007bff;
-      border: none;
-      border-radius: 5px;
-      color: #ffffff;
-      font-size: 16px;
-      margin-bottom: 10px;
+    .contenedorBody{
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      flex-flow: column wrap;
+      width:100%;
+      height: 100vh;
     }
-    .recetas-container button:hover {
-      background-color: #0056b3;
+    .contenedorBody .banner{
+      position: absolute;
+      top:0;
+      z-index:1000;
+      height: 100%;
+      transition: all 2s ease;
     }
-    .recetas-container .logout {
-      background-color: #dc3545;
+    .contenedorBody .banner.cargado {
+      height: 6em;
     }
-    .recetas-container .logout:hover {
-      background-color: #c82333;
+    .calendario{
+      z-index:0;
+    }
+    .sucursal{
+      display:flex;
+      align-items:center;
+      justify-content: flex-start;
+      flex-flow: column wrap;
+    }
+    .sucursal select{ 
+      padding: 10px 20px;
+      border-radius:1em;
+      width:80%;
+      margin-top:1em;
+    }
+    .sucursal label{
+      font-size:1.4em;
+    }
+    .logoutContainer{
+      width:100%;
+      display: flex;
+      align-items:center;
+      justify-content: center;
+      position:absolute;
+      bottom: 10px; 
+    }
+    .downloadContain{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      padding: 1em;
+    }
+    .download, .logout{
+      width:260px;
+      padding:10px;
+      font-size:1.1em;
+      border-radius:1em;
+      transition: all .6s ease;
+    }
+
+    .download{
+      border: 2px solid #7cbc74;
+    }
+    .logout{
+      border: 2px solid #ff7777;
+    }
+    .download:hover{
+      background-color: #7cbc74;
+      border:1px solid #0c6cb4;
+    }
+    .logout:hover{ 
+      background-color: #ff7777;
+      border:1px solid #0c6cb4;
     }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
-  <div class="recetas-container">
-    <h2>Recetas</h2>
-    <form action="/recetas" method="post">
-      <label for="startDate">Start Date:</label>
-      <input type="date" id="startDate" name="startDate" required>
-      <label for="endDate">End Date:</label>
-      <input type="date" id="endDate" name="endDate" required>
-      <label for="sucursal">Sucursal:</label>
-      <input type="text" id="sucursal" name="sucursal" required>
-      <button type="submit">Download Codigos</button>
-    </form>
-    <form action="/logout" method="get">
-      <button type="submit" class="logout">Logout</button>
-    </form>
+  <div class="contenedorBody">
+    <div class="banner">
+      <%- include('partials/banner') %>
+    </div>
+    
+    <div class="recetas-container">
+      <h2>Recetas</h2>
+      <div class="formulario">
+        <form action="/recetas" method="post" class="form">
+          <div class="fechas mitad">
+            <div type="text" id="dateRange" class="calendario" name="dateRange" required></div>
+            <input type="hidden" id="startDate" name="startDate">
+            <input type="hidden" id="endDate" name="endDate">
+          </div>
+          <div class="sucursal mitad">
+            <label for="sucursal">Sucursal:</label>
+            <select id="sucursales" name="sucursal"></select>
+          </div>
+          <div class="downloadContain">
+            <button type="submit" class="download">Descargar Codigos</button>
+          </div>
+        </form>
+      
+        <form action="/logout" method="get" class="logoutContainer">
+          <button type="submit" class="logout">Cerrar sesión</button>
+        </form>
+      </div>
+    </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.querySelector('.banner').classList.add('cargado');
+      }, 700);
+    });
+
+    const select = document.getElementById('sucursales');
+    for (let i = 1; i <= 26; i++) {
+      if (i !== 13) {
+        const option = document.createElement('option');
+        if (i === 26) {
+          option.value = 32;
+          option.textContent = i; 
+        } else {
+          option.value = i;
+          option.textContent = i;
+        }
+        select.appendChild(option);
+      }
+    }
+
+    flatpickr("#dateRange", {
+      mode: "range",
+      inline: true,
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length === 2) {
+          document.getElementById('startDate').value = instance.formatDate(selectedDates[0], "Y-m-d");
+          document.getElementById('endDate').value = instance.formatDate(selectedDates[1], "Y-m-d");
+        }
+      }
+    });
+  </script>
 </body>
 </html>
