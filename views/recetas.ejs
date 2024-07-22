@@ -118,6 +118,10 @@
       background-color: #ff7777;
       border:1px solid #0c6cb4;
     }
+    .recetas-count {
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -136,10 +140,13 @@
             <div type="text" id="dateRange" class="calendario" name="dateRange" required></div>
             <input type="hidden" id="startDate" name="startDate">
             <input type="hidden" id="endDate" name="endDate">
+            <div class="recetas-count" id="recetasCount">Cantidad de recetas: 0</div>
           </div>
           <div class="sucursal mitad">
             <label for="sucursal">Sucursal:</label>
-            <select id="sucursales" name="sucursal"></select>
+            <select id="sucursales" name="sucursal">
+              <option value="all">Todas las sucursales</option>
+            </select>
           </div>
           <div class="downloadContain">
             <button type="submit" class="download">Descargar Codigos</button>
@@ -157,22 +164,21 @@
       setTimeout(() => {
         document.querySelector('.banner').classList.add('cargado');
       }, 700);
-    });
 
-    const select = document.getElementById('sucursales');
-    for (let i = 1; i <= 26; i++) {
-      if (i !== 13) {
-        const option = document.createElement('option');
-        if (i === 26) {
-          option.value = 32;
-          option.textContent = i; 
-        } else {
-          option.value = i;
-          option.textContent = i;
-        }
-        select.appendChild(option);
-      }
-    }
+      // Cargar sucursales dinámicamente
+      fetch('/sucursales')
+        .then(response => response.json())
+        .then(data => {
+          const select = document.getElementById('sucursales');
+          data.forEach(sucursal => {
+            const option = document.createElement('option');
+            option.value = sucursal;
+            option.textContent = sucursal;
+            select.appendChild(option);
+          });
+        })
+        .catch(error => console.error('Error al cargar sucursales:', error));
+    });
 
     flatpickr("#dateRange", {
       mode: "range",
@@ -180,11 +186,53 @@
       dateFormat: "Y-m-d",
       onChange: function(selectedDates, dateStr, instance) {
         if (selectedDates.length === 2) {
-          document.getElementById('startDate').value = instance.formatDate(selectedDates[0], "Y-m-d");
-          document.getElementById('endDate').value = instance.formatDate(selectedDates[1], "Y-m-d");
+          const startDate = instance.formatDate(selectedDates[0], "Y-m-d");
+          const endDate = instance.formatDate(selectedDates[1], "Y-m-d");
+          document.getElementById('startDate').value = startDate;
+          document.getElementById('endDate').value = endDate;
+
+          // Obtener la sucursal seleccionada
+          const sucursal = document.getElementById('sucursales').value;
+
+          // Enviar solicitud AJAX para obtener la cantidad de recetas
+          fetch('/recetas-count', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ startDate, endDate, sucursal })
+          })
+          .then(response => response.json())
+          .then(data => {
+            document.getElementById('recetasCount').textContent = `Cantidad de recetas: ${data.count}`;
+          })
+          .catch(error => console.error('Error:', error));
         }
+      }
+    });
+
+    // Actualizar la cantidad de recetas al cambiar la sucursal
+    document.getElementById('sucursales').addEventListener('change', () => {
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      const sucursal = document.getElementById('sucursales').value;
+
+      if (startDate && endDate) {
+        fetch('/recetas-count', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ startDate, endDate, sucursal })
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('recetasCount').textContent = `Cantidad de recetas: ${data.count}`;
+        })
+        .catch(error => console.error('Error:', error));
       }
     });
   </script>
 </body>
 </html>
+
