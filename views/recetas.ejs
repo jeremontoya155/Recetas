@@ -122,6 +122,12 @@
       font-size: 1.2em;
       margin-top: 10px;
     }
+    .error-message {
+      color: #ff0000;
+      font-size: 14px;
+      display: block;
+    }
+
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -140,13 +146,14 @@
             <div type="text" id="dateRange" class="calendario" name="dateRange" required></div>
             <input type="hidden" id="startDate" name="startDate">
             <input type="hidden" id="endDate" name="endDate">
-            <div class="recetas-count" id="recetasCount">Cantidad de recetas: 0</div>
           </div>
           <div class="sucursal mitad">
             <label for="sucursal">Sucursal:</label>
             <select id="sucursales" name="sucursal">
               <option value="all">Todas las sucursales</option>
             </select>
+            <p id="dateError" class="error-message">Seleccione fechas de inicio y fin.</p>
+            <div class="recetas-count" id="recetasCount"></div>
           </div>
           <div class="downloadContain">
             <button type="submit" class="download">Descargar Codigos</button>
@@ -190,7 +197,7 @@
           const endDate = instance.formatDate(selectedDates[1], "Y-m-d");
           document.getElementById('startDate').value = startDate;
           document.getElementById('endDate').value = endDate;
-
+          document.getElementById('dateError').style.display = 'none';
           // Obtener la sucursal seleccionada
           const sucursal = document.getElementById('sucursales').value;
 
@@ -204,9 +211,16 @@
           })
           .then(response => response.json())
           .then(data => {
-            document.getElementById('recetasCount').textContent = `Cantidad de recetas: ${data.count}`;
+            if (data.count == 0){
+              document.getElementById('recetasCount').textContent = 'No se encontraron recetas';
+            } else{
+              document.getElementById('recetasCount').textContent = `Recetas encontradas: ${data.count}`;
+            }
           })
           .catch(error => console.error('Error:', error));
+        } else {
+          // Mostrar mensaje de error si no se seleccionaron ambas fechas
+          document.getElementById('dateError').style.display = 'block';
         }
       }
     });
@@ -227,7 +241,11 @@
         })
         .then(response => response.json())
         .then(data => {
-          document.getElementById('recetasCount').textContent = `Cantidad de recetas: ${data.count}`;
+          if (data.count == 0){
+              document.getElementById('recetasCount').textContent = 'No se encontraron recetas';
+            } else{
+              document.getElementById('recetasCount').textContent = `Recetas encontradas: ${data.count}`;
+            }
         })
         .catch(error => console.error('Error:', error));
       }
