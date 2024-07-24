@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <title>Recetas</title>
   <style>
@@ -131,6 +131,7 @@
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
 </head>
 <body>
   <div class="contenedorBody">
@@ -191,6 +192,7 @@
       mode: "range",
       inline: true,
       dateFormat: "Y-m-d",
+      locale: flatpickr.l10ns.es,
       onChange: function(selectedDates, dateStr, instance) {
         if (selectedDates.length === 2) {
           const startDate = instance.formatDate(selectedDates[0], "Y-m-d");
