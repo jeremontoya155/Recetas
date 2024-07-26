@@ -2,136 +2,12 @@
 <html lang="es">
 <head>
   <title>Recetas</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .recetas-container {
-      background-color: #ffffff;
-      padding-right: 20px;
-      padding-left:20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      width: 700px;
-      height: 555px;
-      display:flex;
-      align-items:center;
-      justify-content: flex-start;
-      flex-flow: column wrap;
-      position:relative; 
-    }
-    .formulario{
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-flow:column nowrap;
-    }
-    .formulario .form{
-      width:100%;
-      height: 100%;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      flex-flow: row wrap;
-    }
-    .mitad{
-      width:50%;
-      height: 350px;
-    }
-    .contenedorBody{
-      display:flex;
-      align-items:center;
-      justify-content: center;
-      flex-flow: column wrap;
-      width:100%;
-      height: 100vh;
-    }
-    .contenedorBody .banner{
-      position: absolute;
-      top:0;
-      z-index:1000;
-      height: 100%;
-      transition: all 2s ease;
-    }
-    .contenedorBody .banner.cargado {
-      height: 6em;
-    }
-    .calendario{
-      z-index:0;
-    }
-    .sucursal{
-      display:flex;
-      align-items:center;
-      justify-content: flex-start;
-      flex-flow: column wrap;
-    }
-    .sucursal select{ 
-      padding: 10px 20px;
-      border-radius:1em;
-      width:80%;
-      margin-top:1em;
-    }
-    .sucursal label{
-      font-size:1.4em;
-    }
-    .logoutContainer{
-      width:100%;
-      display: flex;
-      align-items:center;
-      justify-content: center;
-      position:absolute;
-      bottom: 10px; 
-    }
-    .downloadContain{
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content: center;
-      padding: 1em;
-    }
-    .download, .logout{
-      width:260px;
-      padding:10px;
-      font-size:1.1em;
-      border-radius:1em;
-      transition: all .6s ease;
-    }
-
-    .download{
-      border: 2px solid #7cbc74;
-    }
-    .logout{
-      border: 2px solid #ff7777;
-    }
-    .download:hover{
-      background-color: #7cbc74;
-      border:1px solid #0c6cb4;
-    }
-    .logout:hover{ 
-      background-color: #ff7777;
-      border:1px solid #0c6cb4;
-    }
-    .recetas-count {
-      font-size: 1.2em;
-      margin-top: 10px;
-    }
-    .error-message {
-      color: #ff0000;
-      font-size: 14px;
-      display: block;
-    }
-
-  </style>
+ 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- <link rel="stylesheet" href="css/footer.css"> -->
 </head>
 <body>
   <div class="contenedorBody">
@@ -165,8 +41,12 @@
           <button type="submit" class="logout">Cerrar sesión</button>
         </form>
       </div>
+      
     </div>
+   
+   
   </div>
+ <!-- <%- include('partials/footer') %> -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {

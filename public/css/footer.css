@@ -1,0 +1,46 @@
+
+a {
+    font-style: none;
+    text-decoration: none;
+  }
+  
+  /* Contenedor principal */
+  .contenedorBody {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+  }
+  
+  /* Estilo del footer */
+  .footer {
+    background-color: #f0f0f0; /* Color de fondo similar al de la página */
+    padding: 20px 0; /* Espaciado en la parte superior e inferior */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Sombra sutil para separación */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-evenly; /* Espaciar uniformemente los elementos */
+    align-items: center;
+    text-align: center;
+    width: 50%; /* O ajustar según el diseño */
+  }
+  
+  .footer-item {
+    font-size: 1em;
+    color: #333; /* Color de texto neutral */
+    text-decoration: none;
+    transition: color 0.3s;
+    padding: 0 10px; /* Espaciado interno para un poco de aire alrededor del texto */
+  }
+  
+  .footer-item:hover {
+    color: #007bff; /* Color de texto al pasar el cursor */
+  }
+  
