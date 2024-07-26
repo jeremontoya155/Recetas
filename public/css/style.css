@@ -6,7 +6,7 @@ body {
   justify-content: space-between;
   flex-flow: column wrap;
   align-items: center;
-  height: 100%;
+  height: 110vh;
   margin: 0;
 }
 .recetas-container {
@@ -49,7 +49,7 @@ body {
   justify-content: space-between;
   flex-flow: column wrap;
   width:100%;
-  height: 100vh;
+  height: 100%;
 }
 .contenedorBody .banner{
   position: absolute;
@@ -132,7 +132,7 @@ body {
   /* Estilo del footer */
   footer{
     width:100%;
-    position: sticky;
+    position: fixed;
     bottom:0;
     height:4em;
     background: rgba(2, 0, 36,.5);
