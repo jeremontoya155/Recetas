@@ -114,6 +114,97 @@ app.post('/recetas-count', isAuthenticated, async (req, res) => {
   }
 });
 
+// Nueva ruta para obtener el listado de recetas con detalles agrupados por día y sucursal
+app.get('/listado', isAuthenticated, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT sucursales, fechacreacion, COUNT(*) as cantidad 
+      FROM recetas 
+      GROUP BY sucursales, fechacreacion 
+      ORDER BY fechacreacion DESC
+    `);
+    const recetas = result.rows;
+    res.render('listado', { recetas });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener el listado de recetas');
+  }
+});
+
+// Nueva ruta para filtrar recetas agrupadas por día y sucursal
+app.post('/filter-recetas', isAuthenticated, async (req, res) => {
+  const { startDate, endDate, sucursal } = req.body;
+  let query = `
+    SELECT sucursales, fechacreacion, COUNT(*) as cantidad 
+    FROM recetas 
+    WHERE 1=1
+  `;
+  const params = [];
+
+  if (startDate) {
+    query += ' AND fechacreacion >= $' + (params.length + 1);
+    params.push(startDate);
+  }
+
+  if (endDate) {
+    query += ' AND fechacreacion <= $' + (params.length + 1);
+    params.push(endDate);
+  }
+
+  if (sucursal) {
+    query += ' AND sucursales = $' + (params.length + 1);
+    params.push(sucursal);
+  }
+
+  query += ' GROUP BY sucursales, fechacreacion ORDER BY fechacreacion DESC';
+
+  try {
+    const result = await pool.query(query, params);
+    const recetas = result.rows;
+    res.render('listado', { recetas });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al filtrar el listado de recetas');
+  }
+});
+
+// Ruta para actualizar la sucursal de un lote de recetas
+app.post('/update-lote', isAuthenticated, async (req, res) => {
+  const { sucursalActual, fecha, nuevaSucursal } = req.body;
+  const query = `
+    UPDATE recetas 
+    SET sucursales = $1 
+    WHERE sucursales = $2 AND fechacreacion = $3
+  `;
+  const params = [nuevaSucursal, sucursalActual, fecha];
+
+  try {
+    await pool.query(query, params);
+    res.redirect('/listado');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al actualizar el lote de recetas');
+  }
+});
+
+// Ruta para eliminar un lote de recetas
+app.post('/delete-lote', isAuthenticated, async (req, res) => {
+  const { sucursal, fecha } = req.body;
+  const query = `
+    DELETE FROM recetas 
+    WHERE sucursales = $1 AND fechacreacion = $2
+  `;
+  const params = [sucursal, fecha];
+
+  try {
+    await pool.query(query, params);
+    res.redirect('/listado');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al eliminar el lote de recetas');
+  }
+});
+
 // Ruta para cerrar sesión
 app.get('/logout', (req, res) => {
   req.session.destroy(err => {
@@ -128,4 +219,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
-

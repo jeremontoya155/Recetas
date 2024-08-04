@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Listado de Recetas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="/styles.css"> -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .table {
+            margin-top: 20px;
+        }
+        .form-inline {
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .btn-primary, .btn-warning, .btn-danger {
+            border-radius: 20px;
+        }
+        .btn-warning {
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-warning:hover, .btn-danger:hover {
+            opacity: 0.8;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .form-control {
+            border-radius: 20px;
+        }
+        .form-inline .form-control {
+            margin-right: 10px;
+        }
+        .thead-dark {
+            background-color: #343a40;
+            color: white;
+        }
+        .thead-dark th {
+            text-align: center;
+        }
+        .table td {
+            text-align: center;
+        }
+        .table td .btn {
+            margin: 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Listado de Recetas</h1>
+        <form class="form-inline justify-content-center" method="post" action="/filter-recetas">
+            <div class="form-group mb-2">
+                <label for="startDate" class="sr-only">Fecha de inicio:</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" placeholder="Fecha de inicio">
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="endDate" class="sr-only">Fecha de fin:</label>
+                <input type="date" class="form-control" id="endDate" name="endDate" placeholder="Fecha de fin">
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="sucursal" class="sr-only">Sucursal:</label>
+                <input type="text" class="form-control" id="sucursal" name="sucursal" placeholder="Sucursal">
+            </div>
+            <button type="submit" class="btn btn-primary mb-2"><i class="fas fa-filter"></i> Filtrar</button>
+        </form>
+        <table class="table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Sucursal</th>
+                    <th>Fecha de Creación</th>
+                    <th>Cantidad de Recetas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% recetas.forEach(receta => { %>
+                    <tr>
+                        <td><%= receta.sucursales %></td>
+                        <td><%= receta.fechacreacion.toISOString().split('T')[0] %></td>
+                        <td><%= receta.cantidad %></td>
+                        <td>
+                            <form method="post" action="/update-lote" class="d-inline">
+                                <input type="hidden" name="sucursalActual" value="<%= receta.sucursales %>">
+                                <input type="hidden" name="fecha" value="<%= receta.fechacreacion.toISOString().split('T')[0] %>">
+                                <input type="text" name="nuevaSucursal" class="form-control d-inline w-50" placeholder="Nueva Sucursal" required>
+                                <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
+                            </form>
+                            <form method="post" action="/delete-lote" class="d-inline">
+                                <input type="hidden" name="sucursal" value="<%= receta.sucursales %>">
+                                <input type="hidden" name="fecha" value="<%= receta.fechacreacion.toISOString().split('T')[0] %>">
+                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
