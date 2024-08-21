@@ -6,9 +6,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <!-- <link rel="stylesheet" type="text/css" href="/styles.css"> -->
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
+            position: relative;
         }
         .container {
             margin-top: 50px;
@@ -76,6 +80,8 @@
         .navListado button{
             margin-left:1em;
         }
+
+        /* boton volver */
         .botonVolver {
             transform:scale(0.6);
             /* From Uiverse.io by Li-Deheng */ 
@@ -189,10 +195,39 @@
             }
             }
         }
+        /* FIN BOTON VOLVER */
+        .columnaAcciones{
+            display:flex;
+            align-items:center;
+        }
+        @media(max-width:1200px){
+            .columnaAcciones form span{
+                display:none;
+            }
+        }
+
+        .filtrosListado{
+            display:flex;
+            align-items:center;
+            justify-content: space-evenly;
+            flex-flow: row wrap;
+        }
+        .subir{
+            position:fixed;
+            top: 90vh;
+            right:30px;
+            border-radius: 50%; 
+            background-color: #549cac; 
+        }
+        .subir a{
+            padding: 20px 10px;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
-    <div class="navListado">
+    
+    <div class="navListado" id="listado">
         <div class="botonVolver">
             <div class="btn-conteiner">
                 <a class="btn-content" onclick="window.location.href='/recetas'">
@@ -211,19 +246,21 @@
         </div>
         <!-- <button onclick="window.location.href='/recetas'" class="buttonVolver">Volver</button> -->
         <img src="/images/Cafapro.png" type='png' alt="Cafapro"/>
+        
     </div>
     <div class="container">
-        <h1>Listado de Recetas</h1>
-        <form class="form-inline justify-content-center" method="post" action="/filter-recetas">
+        
+        <h1 >Listado de Recetas</h1>
+        <form class="form-inline filtrosListado" method="post" action="/filter-recetas">
             <div class="form-group mb-2">
                 <label for="startDate" class="sr-only">Fecha de inicio:</label>
                 <input type="date" class="form-control" id="startDate" name="startDate" placeholder="Fecha de inicio">
             </div>
-            <div class="form-group mx-sm-3 mb-2">
+            <div class="form-group mb-2">
                 <label for="endDate" class="sr-only">Fecha de fin:</label>
                 <input type="date" class="form-control" id="endDate" name="endDate" placeholder="Fecha de fin">
             </div>
-            <div class="form-group mx-sm-3 mb-2">
+            <div class="form-group mb-2">
                 <label for="sucursal" class="sr-only">Sucursal:</label>
                 <input type="text" class="form-control" id="sucursal" name="sucursal" placeholder="Sucursal">
             </div>
@@ -244,23 +281,26 @@
                         <td><%= receta.sucursales %></td>
                         <td><%= receta.fechacreacion.toISOString().split('T')[0] %></td>
                         <td><%= receta.cantidad %></td>
-                        <td>
+                        <td class="columnaAcciones">
                             <form method="post" action="/update-lote" class="d-inline">
                                 <input type="hidden" name="sucursalActual" value="<%= receta.sucursales %>">
                                 <input type="hidden" name="fecha" value="<%= receta.fechacreacion.toISOString().split('T')[0] %>">
                                 <input type="text" name="nuevaSucursal" class="form-control d-inline w-50" placeholder="Nueva Sucursal" required>
-                                <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i> Actualizar</button>
+                                <button type="submit" class="btn btn-warning"><i class="fas fa-edit"></i><span> Actualizar</span></button>
                             </form>
                             <form method="post" action="/delete-lote" class="d-inline">
                                 <input type="hidden" name="sucursal" value="<%= receta.sucursales %>">
                                 <input type="hidden" name="fecha" value="<%= receta.fechacreacion.toISOString().split('T')[0] %>">
-                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Eliminar</button>
+                                <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i><span> Eliminar</span></button>
                             </form>
                         </td>
                     </tr>
                 <% }) %>
             </tbody>
         </table>
+    </div>
+    <div class="subir">
+        <a href="#listado"><div class="fas fa-arrow-up"></div></a>
     </div>
 </body>
 </html>
