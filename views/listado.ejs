@@ -214,13 +214,30 @@
         }
         .subir{
             position:fixed;
-            top: 90vh;
+            top: 100vh;
             right:30px;
-            border-radius: 50%; 
+            border-radius: 50%;
             background-color: #549cac; 
+            padding: .8em 1em;
+            display:flex;
+            align-items: center;
+            justify-content:center;
+            transition: all .6s ease;   
+            opacity:0;
+            visibility: hidden;
+        }
+        .subir.show {
+            top: 90vh; /* Posición cuando es visible */
+            opacity: 1; /* Mostrar cuando tenga la clase 'show' */
+            visibility: visible; /* Mostrar cuando tenga la clase 'show' */
+        }
+
+        .subir:hover{
+            transform: translateY(-5px);
+            cursor: pointer;
         }
         .subir a{
-            padding: 20px 10px;
+            /* padding:.3em; */
             color: #fff;
         }
     </style>
@@ -300,7 +317,17 @@
         </table>
     </div>
     <div class="subir">
-        <a href="#listado"><div class="fas fa-arrow-up"></div></a>
+        <a href="#listado" id="subir"><div class="fas fa-arrow-up flecha"></div></a>
     </div>
+    <script>
+        document.addEventListener('scroll', function() {
+            var subirButton = document.querySelector('.subir');
+            if (window.scrollY > 50) {
+                subirButton.classList.add('show');
+            } else {
+                subirButton.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
